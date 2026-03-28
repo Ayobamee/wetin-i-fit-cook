@@ -189,6 +189,7 @@ export default function App() {
   const [inputValue, setInputValue] = useState('')
   const [results, setResults] = useState(null)
   const [openCard, setOpenCard] = useState(null)
+  const [filter, setFilter] = useState("All")
 
   // NEW: shopping list state
   // shoppingList = array of { name: string, recipe: string }
@@ -203,6 +204,12 @@ export default function App() {
     }
     setInputValue('')
   }
+
+//Clear Ingredients
+  function clearIngredients() {
+      setMyIngredients([])
+    }
+  
 
   function toggleQuick(item) {
     if (myIngredients.includes(item)) {
@@ -264,6 +271,7 @@ export default function App() {
     setCheckedItems(new Set())
   }
 
+
   function shareRecipe(e, name) {
     e.stopPropagation()
     const text = `Try this: ${name} — from Wetin I Fit Cook? 🍲`
@@ -305,9 +313,17 @@ export default function App() {
           <button className='add-btn' onClick={addIngredient}  data-testid='add-ingredient-btn'> 
             Add
           </button>
+          {myIngredients.length > 0 && (
+          <button className='clear-all-btn' onClick={clearIngredients} data-testid='clear-ingredient-btn'>
+            Clear
+            </button>
+          )}
+
         </div>
 
         {myIngredients.length > 0 && (
+          <>
+              <p className="ing-count">{myIngredients.length} ingredients added</p>
           <div className='chips'>
             {myIngredients.map((item) => (
               <div className='chip' key={item}>
@@ -321,6 +337,7 @@ export default function App() {
               </div>
             ))}
           </div>
+          </>
         )}
 
         <div className='quick-section'>
@@ -338,7 +355,7 @@ export default function App() {
           </div>
         </div>
 
-        <button className='cta-btn' onClick={findRecipes}  data-testid='find-receipes-btn'>
+        <button className='cta-btn' onClick={findRecipes}  data-testid=''>
           Find recipes
         </button>
       </section>
@@ -357,6 +374,8 @@ export default function App() {
           </div>
         )}
 
+        
+
         {results !== null && results.length === 0 && (
           <div className='empty'>
             <div className='empty-icon'>😅</div>
@@ -364,6 +383,8 @@ export default function App() {
             <p className='empty-body'>Try adding tomato, onion or rice</p>
           </div>
         )}
+    
+  
 
         {results !== null && results.length > 0 && (
           <>
@@ -371,7 +392,22 @@ export default function App() {
               {results.length} recipe{results.length > 1 ? 's' : ''} found
             </p>
 
-            {results.map((recipe, index) => {
+  <div className="filter-row">
+      {["All", "Easy", "Medium", "Very Easy"].map((f) => (
+        <button
+          key={f}
+          className={`filter-btn ${filter === f ? "filter-btn--active" : ""}`}
+          onClick={() => setFilter(f)}
+        >
+          {f}
+        </button>
+      ))}
+    </div>
+            
+
+            {results
+            .filter((r) => filter === "All" || r.difficulty === filter)
+            .map((recipe, index) => {
               const isOpen = openCard === index
 
               const haveReq = recipe.required.filter((x) =>
@@ -505,6 +541,7 @@ export default function App() {
             })}
           </>
         )}
+        
       </section>
 
       {/* NEW: MARKET LIST — only shows when list has items */}
