@@ -190,6 +190,7 @@ export default function App() {
   const [results, setResults] = useState(null)
   const [openCard, setOpenCard] = useState(null)
   const [filter, setFilter] = useState("All")
+  const [inputError, setInputError] = useState(false)
 
   // NEW: shopping list state
   // shoppingList = array of { name: string, recipe: string }
@@ -198,11 +199,18 @@ export default function App() {
   const [checkedItems, setCheckedItems] = useState(new Set())
 
   function addIngredient() {
-    const val = inputValue.trim().toLowerCase()
-    if (val && !myIngredients.includes(val)) {
-      setMyIngredients([...myIngredients, val])
-    }
-    setInputValue('')
+      const val = inputValue.trim().toLowerCase()  // ← this line is missing!
+     if (!val) {
+    setInputError(true)    // ← show the red indicator
+    return                 // ← stop here, don't add anything
+  }
+
+  if (!myIngredients.includes(val)) {
+    setMyIngredients([...myIngredients, val])
+  }
+  
+  setInputError(false)     // ← clear error once valid input is added
+  setInputValue("")
   }
 
 //Clear Ingredients
@@ -301,15 +309,18 @@ export default function App() {
       <section className='panel'>
         <p className='panel-label'>Your ingredients</p>
         <div className='input-row'>
-          <input
-            className='ing-input'
-            type='text'
-            placeholder='Add an ingredient...'
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            data-testid='ingredient-input'
-          />
+    <input
+  className={`ing-input ${inputError ? "ing-input--error" : ""}`}
+  type='text'
+  placeholder={inputError ? "Please add an ingredient first!" : "Add an ingredient..."}
+  value={inputValue}
+  onChange={(e) => {
+    setInputValue(e.target.value)
+    setInputError(false)
+  }}
+  onKeyDown={handleKeyDown}
+  data-testid='ingredient-input'
+/>
           <button className='add-btn' onClick={addIngredient}  data-testid='add-ingredient-btn'> 
             Add
           </button>

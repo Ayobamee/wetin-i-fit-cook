@@ -159,6 +159,24 @@ body {
   background: var(--surface);
 }
 
+.ing-input--error {
+  border-color: #ef4444;
+  background: #fff5f5;
+  animation: shake 0.3s ease;
+}
+
+.ing-input--error::placeholder {
+  color: #ef4444;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-6px); }
+  50%  { transform: translateX(6px); }
+  75%  { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
 .add-btn {
   height: 40px;
   padding: 0 16px;
