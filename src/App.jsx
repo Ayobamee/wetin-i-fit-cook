@@ -233,6 +233,7 @@ export default function App() {
 
   function handleKeyDown(e) {
     if (e.key === 'Enter') addIngredient()
+      else if (e.key === "Escape") setInputValue("")
   }
 
   function findRecipes() {
